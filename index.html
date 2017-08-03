@@ -2,14 +2,14 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>Hello World!</title>
+    <title>Screen capture demo</title>
   </head>
   <body>
-    <h1>Hello World!</h1>
-    <!-- All of the Node.js APIs are available in this renderer process. -->
-    We are using Node.js <script>document.write(process.versions.node)</script>,
     Chromium <script>document.write(process.versions.chrome)</script>,
-    and Electron <script>document.write(process.versions.electron)</script>.
+    Electron <script>document.write(process.versions.electron)</script>
+    <p><input id='captureScreen' type='button' value='Capture screen'/></p>
+    <div id='screenName'></div>
+    <canvas id='canvas'/>
   </body>
 
   <script>
