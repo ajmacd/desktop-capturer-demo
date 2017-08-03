@@ -18,12 +18,12 @@ var captureScreen = () => {
       let ctx = canvas.getContext('2d')
       let img = new Image()
       const size = sources[0].thumbnail.getSize()
-      img.src = sources[0].thumbnail.toDataURL()
       canvas.width = size.width
       canvas.height = size.height
 
       screenName.textContent = `${sources[0].name}, ${size.width} x ${size.height}, ${img.src.length}`
-      ctx.drawImage(img, 0, 0)
+      img.onload = () => ctx.drawImage(img, 0, 0);
+      img.src = sources[0].thumbnail.toDataURL()
     } else {
       screenName.textContent = 'Nothing captured'
     }
