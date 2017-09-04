@@ -1,33 +1,66 @@
 // This file is required by the index.html file and will
 // be executed in the renderer process for that window.
 // All of the Node.js APIs are available in this process.
+const electron = require('electron')
 const { desktopCapturer } = require('electron')
 
-var captureScreen = () => {
+var captureScreens = () => {
+  const screenNames = document.getElementById('screenNames')
+  const canvas = document.getElementById('thumbnailCanvas')
+  const ctx = canvas.getContext('2d')
+  canvas.width = 0
+  canvas.height = 0
+  screenNames.textContent = ''
   desktopCapturer.getSources({
     types: ['screen'],
     thumbnailSize: {
-      width: 640,
-      height: 480
+      width: 320,
+      height: 240
     }}, (error, sources) => {
-    if (error) throw error
+    if (error) console.error(error)
 
-    let screenName = document.getElementById('screenName')
-    if (sources.length > 0) {
-      let canvas = document.getElementById('canvas')
-      let ctx = canvas.getContext('2d')
-      let img = new Image()
-      const size = sources[0].thumbnail.getSize()
-      canvas.width = size.width
-      canvas.height = size.height
+    sources.forEach((source) => {
+      const img = new Image()
+      const size = source.thumbnail.getSize()
+      canvas.width += size.width
+      canvas.height = Math.max(canvas.height, size.height)
 
-      screenName.textContent = `${sources[0].name}, ${size.width} x ${size.height}, ${img.src.length}`
-      img.onload = () => ctx.drawImage(img, 0, 0);
-      img.src = sources[0].thumbnail.toDataURL()
-    } else {
-      screenName.textContent = 'Nothing captured'
-    }
+      screenNames.textContent += `${source.id} (${source.name}), `
+      const dx = canvas.width - size.width
+      img.onload = () => ctx.drawImage(img, dx, 0)
+      img.src = source.thumbnail.toDataURL()
+
+      navigator.mediaDevices.getUserMedia({
+        audio: false,
+        video: {
+          mandatory: {
+            chromeMediaSource: 'desktop',
+            chromeMediaSourceId: source.id,
+            minWidth: 640,
+            maxWidth: 640,
+            minHeight: 320,
+            maxHeight: 320
+          }
+        }
+      })
+      .then((stream) => {
+        const screenVideos = document.getElementById('screenVideos')
+        const video = document.createElement('video')
+        screenVideos.appendChild(video)
+        video.srcObject = stream
+        video.onloadedmetadata = () => {
+          video.play()
+        }
+      })
+      .catch((error) => console.error(error))
+    })
+    const screenInfo = document.getElementById('screenInfo')
+    const displays = electron.screen.getAllDisplays()
+    displays.forEach((display) => {
+      const size = display.size
+      screenInfo.textContent += `${display.id} (${size.width} x ${size.height}), `
+    })
   })
 }
 
-document.getElementById('captureScreen').onclick = captureScreen
+document.getElementById('captureScreens').onclick = captureScreens
