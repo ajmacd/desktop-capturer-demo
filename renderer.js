@@ -3,14 +3,18 @@
 // All of the Node.js APIs are available in this process.
 const electron = require('electron')
 const { desktopCapturer } = require('electron')
+const $ = require('jquery')
 
 var captureScreens = () => {
   const screenNames = document.getElementById('screenNames')
+  const screenInfo = document.getElementById('screenInfo')
   const canvas = document.getElementById('thumbnailCanvas')
   const ctx = canvas.getContext('2d')
   canvas.width = 0
   canvas.height = 0
   screenNames.textContent = ''
+  screenInfo.textContent = ''
+  $('#screenVideos').empty()
   desktopCapturer.getSources({
     types: ['screen'],
     thumbnailSize: {
@@ -54,7 +58,6 @@ var captureScreens = () => {
       })
       .catch((error) => console.error(error))
     })
-    const screenInfo = document.getElementById('screenInfo')
     const displays = electron.screen.getAllDisplays()
     displays.forEach((display) => {
       const size = display.size
