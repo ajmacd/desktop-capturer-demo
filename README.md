@@ -8,7 +8,7 @@ To clone and run this repository you'll need [Git](https://git-scm.com) and [Nod
 # Clone this repository
 git clone https://github.com/ajmacd/desktop-capturer-demo
 # Go into the repository
-cd desktop-capturerr-demo
+cd desktop-capturer-demo
 # Install dependencies
 npm install
 # Run the app
