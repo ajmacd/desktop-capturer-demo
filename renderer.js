@@ -29,7 +29,7 @@ var captureScreens = () => {
       canvas.width += size.width
       canvas.height = Math.max(canvas.height, size.height)
 
-      screenNames.textContent += `${source.id} (${source.name}), `
+      screenNames.textContent += `${source.id}, ${source.display_id} (${source.name}) | `
       const dx = canvas.width - size.width
       img.onload = () => ctx.drawImage(img, dx, 0)
       img.src = source.thumbnail.toDataURL()
